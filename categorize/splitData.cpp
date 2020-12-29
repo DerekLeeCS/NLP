@@ -16,8 +16,6 @@ using std::ifstream;
 using std::ofstream;
 
 #define PERCENT 20
-#define NUM_INPUTS 9
-#define NUM_OUTPUTS 1
 
 template <class T>
 void checkValidStream( T &, string );
