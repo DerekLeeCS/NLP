@@ -7,3 +7,4 @@
 *.exe
 *.o
 categorize/tempCodeRunnerFile.py
+*.pyc

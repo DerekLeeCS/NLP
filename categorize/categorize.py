@@ -1,8 +1,7 @@
 import numpy as np
 from nltk.tokenize import word_tokenize
-import os
 from collections import defaultdict
-
+import os
 
 # Used to map a string label to an int
 def mapStrToInt( listString ):
