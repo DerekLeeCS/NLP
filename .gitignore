@@ -8,3 +8,5 @@
 *.o
 categorize/tempCodeRunnerFile.py
 *.pyc
+categorize/TC_provided/main.py
+categorize/TC_provided/naive_bayes.py

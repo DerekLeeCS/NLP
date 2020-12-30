@@ -119,3 +119,8 @@ class Classifier( Utility ):
 
         # Get word counts for each testing file
         self.testCounts, _ = self.countWords( self.testNames )
+
+        # Map words 
+        # Ignores a word if has not been previously seen
+        for i in range( len(self.testCounts) ):
+            self.testCounts[i] = { self.mappingsWords[k]:v for (k,v) in self.testCounts[i].items() if k in self.mappingsWords }

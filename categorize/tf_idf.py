@@ -39,11 +39,11 @@ class TF_IDF( Classifier ):
             self.idf[ np.array(list( fileCounts[i].keys() ))-1 ] += 1
         self.idf = np.log10( self.numDocs / self.idf )
 
-    def calcWeights( self, fileCounts, numTotalWords ):
+    def calcWeights( self, fileCounts ):
 
         # Calculate weighted tf-idf value
         weighted = []
-        for i in range( self.numDocs ):
+        for i in range( len( fileCounts ) ):
             weighted.append( { k:( np.log10(v+1) * self.idf[k-1] ).item() for (k,v) in fileCounts[i].items() } )
 
         return weighted
@@ -53,11 +53,11 @@ class TF_IDF( Classifier ):
         # Get the word counts for training documents
         self.loadTrain( fileTrainList )
 
-        # Calculated the IDF
+        # Calculate the IDF
         self.calcIDF( self.trainCounts, self.numTotalWords )
 
         # Calculate the weighted word counts
-        weighted = self.calcWeights( self.trainCounts, self.numTotalWords ) 
+        weighted = self.calcWeights( self.trainCounts ) 
 
         # Convert dict of weighted word counts to array
         arrWeighted = np.zeros( (self.numDocs,self.numTotalWords) )
@@ -93,12 +93,8 @@ class TF_IDF( Classifier ):
         # Get the word counts for testing documents
         self.loadTest( fileTestList )
 
-        # Ignores a word if has not been previously seen
-        # B/c unknown words map to an idf value of 0
-        weightedTest = []
-        for i in range( len(self.testCounts) ):
-            self.testCounts[i] = { self.mappingsWords[k]:v for (k,v) in self.testCounts[i].items() if k in self.mappingsWords }
-            weightedTest.append( { k:( np.log10(v+1) * self.idf[k-1] ).item() for (k,v) in self.testCounts[i].items() } )
+        # Calculate the weighted word counts
+        weightedTest = self.calcWeights( self.testCounts ) 
 
         # Convert to array
         arrWeightedTest = np.zeros( ( len(weightedTest), self.numTotalWords ) )
