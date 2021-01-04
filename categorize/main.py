@@ -6,8 +6,6 @@ if __name__ == "__main__":
     
     model = TF_IDF()    
 
-    print( "Please input all filepaths relative to the current working directory:\n", os.getcwd(), sep='', end='\n\n' ) ################ REMOVE LATER
-
     ############ Train Step ############
     if __debug__:
         # fileTrainList = "corpus1_train.labels"
