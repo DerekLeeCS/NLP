@@ -1,5 +1,23 @@
+from __future__  import annotations
 from collections import defaultdict
-from typing import List, DefaultDict, Tuple
+from typing import List, DefaultDict, Tuple, Union
+
+### Type Declarations ###
+
+# Stores location of component POS and name of POS
+# Used for backtracking
+Component = Tuple( int,int,int,str,str )
+
+# 2D array created by CKY algorithm
+ArrCKY = List[ List[set] ]
+
+# Maps a POS to its component POS
+# Used for backtracking
+ArrReverseCKY = List[ List[ DefaultDict[ str, List[Component] ] ] ]
+
+# ParseTree is recursive
+# Base type is ( POS, word )
+ParseTree = Union[ Tuple[ str, 'ParseTree', 'ParseTree' ], Tuple[ str, str ] ]
 
 class CKY:
 
@@ -35,7 +53,7 @@ class CKY:
 
 
     # CKY Algorithm
-    def parse( self, words: List[str] ) -> List[ List[set] ]:
+    def parse( self, words: List[str] ) -> Tuple( ArrCKY, ArrReverseCKY ):
         
         # Count number of words in sentence
         n = len( words )
@@ -63,7 +81,7 @@ class CKY:
 
         return matrix, constituents
 
-    def getParses( self, constituents: List[ List[ DefaultDict[str,List] ] ], words: List[str], row: int, col: int, targetPOS: str ) -> List: 
+    def getParses( self, constituents: ArrReverseCKY, words: List[str], row: int, col: int, targetPOS: str ) -> List[ ParseTree ]: 
 
         # Reached terminal
         if row == col-1:
@@ -83,7 +101,7 @@ class CKY:
         return listParseTrees
 
     # Prints a specific parse of the sentence with indents
-    def printParse( self, listParseTrees, depth ):
+    def printParse( self, listParseTrees: List[ ParseTree ], depth: int ) -> str:
 
         parsedSentence = ""
 
@@ -96,8 +114,8 @@ class CKY:
 
         return parsedSentence
 
-    # Displays a calculated parse table
-    def display( self, constituents: List[ List[ DefaultDict[str,List] ] ], words: List[str] ) -> None:
+    # Displays all parsed sentences
+    def display( self, constituents: ArrReverseCKY, words: List[str] ) -> None:
         
         n = len( words )
 
