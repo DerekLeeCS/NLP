@@ -1,6 +1,7 @@
 import numpy as np
 import os
 from classify import Classifier
+from typing import List, Dict, DefaultDict
 
 
 class TF_IDF( Classifier ):
@@ -8,7 +9,7 @@ class TF_IDF( Classifier ):
     def __init__( self ):
         pass
 
-    def calcSimilarity( self, inputs, centroids ):
+    def calcSimilarity( self, inputs: np.ndarray, centroids: np.ndarray ) -> np.ndarray:
 
         '''
         Arguments:
@@ -27,7 +28,7 @@ class TF_IDF( Classifier ):
 
         return similarity 
 
-    def calcIDF( self, fileCounts, numTotalWords ):
+    def calcIDF( self, fileCounts: List[ Dict[int,int] ], numTotalWords: int ) -> None:
 
         '''
         Calculates log Inverse Document Frequency for each word
@@ -39,7 +40,7 @@ class TF_IDF( Classifier ):
             self.idf[ np.array(list( fileCounts[i].keys() ))-1 ] += 1
         self.idf = np.log10( self.numDocs / self.idf )
 
-    def calcWeights( self, fileCounts ):
+    def calcWeights( self, fileCounts: List[ Dict[int,int] ] ) -> List[ Dict[int,int] ]:
 
         # Calculate weighted tf-idf value
         weighted = []
@@ -48,7 +49,7 @@ class TF_IDF( Classifier ):
 
         return weighted
 
-    def train( self, fileTrainList ):
+    def train( self, fileTrainList: List[str] ) -> None:
 
         # Get the word counts for training documents
         self.loadTrain( fileTrainList )
@@ -72,7 +73,7 @@ class TF_IDF( Classifier ):
             listDocs = self.dictLabelToFile[key]
             self.centroids[key-1] = np.average( arrWeighted[ listDocs ], axis=0 )
 
-    def evaluate( self, testWeightedCounts, fileOutput ):
+    def evaluate( self, testWeightedCounts: List[ Dict[int,int] ], fileOutput: str ) -> None:
 
         # Calculate cosine similarity
         similarity = self.calcSimilarity( testWeightedCounts, self.centroids )
@@ -88,7 +89,7 @@ class TF_IDF( Classifier ):
             for i in range( len( self.testNames ) ):
                 f.write( self.testNames[i] + " " + names[i] + "\n" )
 
-    def test( self, fileTestList, fileOutput ):
+    def test( self, fileTestList: List[str], fileOutput: List[str] ) -> None:
 
         # Get the word counts for testing documents
         self.loadTest( fileTestList )

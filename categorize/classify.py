@@ -1,5 +1,6 @@
 from nltk.tokenize import word_tokenize
 from collections import defaultdict
+from typing import List, Dict, DefaultDict
 import os
 
 
@@ -11,7 +12,7 @@ class Utility:
         pass
 
     # Used to map a string label to an int
-    def mapStrToInt( self, listString ):
+    def mapStrToInt( self, listString: List[str] ) -> Dict[str,int]:
 
         '''Returns a dict to map each unique string to an int'''
 
@@ -19,7 +20,7 @@ class Utility:
         return mappings
 
     # Create mappings given a list of labels
-    def createMappings( self, listLabels ):
+    def createMappings( self, listLabels: List[str] ) -> tuple( [ Dict[str,int], Dict[int,str] ] ):
 
         # Get dict for mapping 
         mappingsLabels = self.mapStrToInt( listLabels )
@@ -28,7 +29,7 @@ class Utility:
         return mappingsLabels, reverseMappings
 
     # Load the list of files
-    def loadList( self, fileList ):
+    def loadList( self, fileList: List[str] ) -> tuple( [ List[str], List[str], int ] ):
 
         listFiles = []
         listLabels = []
@@ -47,7 +48,7 @@ class Utility:
         return listFiles, listLabels, N
 
     # Used to get counts of unique words in each file
-    def countWords( self, listFiles ):
+    def countWords( self, listFiles: List[str] ) -> tuple( [ List[ DefaultDict[str,int] ], DefaultDict[str,int] ] ):
 
         '''
         Returns:
@@ -85,7 +86,7 @@ class Classifier( Utility ):
         pass
 
     # Get word counts for training documents
-    def loadTrain( self, fileTrainList ):
+    def loadTrain( self, fileTrainList: List[str] ) -> None:
 
         listTrainFiles, listTrainLabels, self.numDocs = self.loadList( fileTrainList )
 
@@ -112,7 +113,7 @@ class Classifier( Utility ):
         self.numTotalWords = len( self.totalCounts.keys() )
 
     # Get word counts for testing documents
-    def loadTest( self, fileTestList ):
+    def loadTest( self, fileTestList: List[str] ) -> None:
 
         # Save file names for writing results
         self.testNames, _, _ = self.loadList( fileTestList )
