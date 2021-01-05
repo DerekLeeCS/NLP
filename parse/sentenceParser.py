@@ -6,7 +6,7 @@ from typing import List, DefaultDict, Tuple, Union
 
 # Stores location of component POS and name of POS
 # Used for backtracking
-Component = Tuple( int,int,int,str,str )
+Component = Tuple[ int,int,int,str,str ]
 
 # 2D array created by CKY algorithm
 ArrCKY = List[ List[set] ]
@@ -87,7 +87,7 @@ class CKY:
         if row == col-1:
             return [ [( targetPOS, words[col] )] ] \
                 if targetPOS in constituents[row][col].keys() \
-                else []
+                else [[]]
 
         # Reached non-terminal
         listParseTrees = []
@@ -106,7 +106,7 @@ class CKY:
         parsedSentence = ""
 
         if len( listParseTrees ) == 2:
-            return "\t"*depth + "[" + listParseTrees[0] + " " + listParseTrees[1] + "] "
+            return "\t"*depth + "[" + listParseTrees[0] + " " + listParseTrees[1] + "]"
         else:
             parsedSentence += "\t"*depth + "[" + listParseTrees[0] + "\n"
             parsedSentence +=  self.printParse( listParseTrees[1][0], depth+1 ) + "\n"
@@ -118,15 +118,17 @@ class CKY:
     def display( self, constituents: ArrReverseCKY, words: List[str] ) -> None:
         
         n = len( words )
-
+        
         # Get all valid parses
-        listParseTrees = self.getParses( constituents, words, 0, n-1, 'S' )
+        listParseTrees = self.getParses( constituents, words, 0, n-1, 'S' )[0]
 
         if len( listParseTrees ) == 0:
             print( "NO VALID PARSES" )
             return
 
         # Loop through all valid parses and print
+        print( "Number of valid parses:", len( listParseTrees ) )
         for i in range( len( listParseTrees ) ):
-            finalStr = self.printParse( listParseTrees[i][0], 0 )
+            print( "Parse #", i+1, ":", sep="" )
+            finalStr = self.printParse( listParseTrees[i], 0 )
             print( finalStr )
