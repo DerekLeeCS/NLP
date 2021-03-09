@@ -28,8 +28,8 @@ class Utility:
 
         return mappingsLabels, reverseMappings
 
-    # Load the list of files
-    def loadList( self, fileList: List[str] ) -> tuple( [ List[str], List[str], int ] ):
+    # Load the list of training files and labels
+    def loadTrainList( self, fileList: str ) -> tuple( [ List[str], List[str], int ] ):
 
         listFiles = []
         listLabels = []
@@ -46,6 +46,19 @@ class Utility:
                 N += 1
 
         return listFiles, listLabels, N
+
+    # Load the list of testing files
+    def loadTestList( self, fileList: str ) -> List[str]:
+
+        listFiles = []
+
+        # Read file to get list of files & labels
+        with open( os.path.join( os.getcwd(), fileList ), 'r' ) as f:
+            
+            for path in f:
+                listFiles.append( path.rstrip() )
+
+        return listFiles
 
     # Used to get counts of unique words in each file
     def countWords( self, listFiles: List[str] ) -> tuple( [ List[ DefaultDict[str,int] ], DefaultDict[str,int] ] ):
@@ -88,7 +101,7 @@ class Classifier( Utility ):
     # Get word counts for training documents
     def loadTrain( self, fileTrainList: List[str] ) -> None:
 
-        listTrainFiles, listTrainLabels, self.numDocs = self.loadList( fileTrainList )
+        listTrainFiles, listTrainLabels, self.numDocs = self.loadTrainList( fileTrainList )
 
         # Convert labels from str -> int
         self.mappingsLabels, self.reverseMappings = self.createMappings( listTrainLabels )
@@ -116,7 +129,7 @@ class Classifier( Utility ):
     def loadTest( self, fileTestList: List[str] ) -> None:
 
         # Save file names for writing results
-        self.testNames, _, _ = self.loadList( fileTestList )
+        self.testNames = self.loadTestList( fileTestList )
 
         # Get word counts for each testing file
         self.testCounts, _ = self.countWords( self.testNames )

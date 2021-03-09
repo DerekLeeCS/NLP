@@ -1,4 +1,3 @@
-
 *.article
 *.labels
 *.list
@@ -6,7 +5,12 @@
 *.txt
 *.exe
 *.o
-categorize/tempCodeRunnerFile.py
 *.pyc
+*.docx
+*.zip
+categorize/tempCodeRunnerFile.py
 categorize/TC_provided/main.py
 categorize/TC_provided/naive_bayes.py
+PSET #1
+PSET #2
+PSET #3

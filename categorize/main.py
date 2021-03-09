@@ -11,7 +11,7 @@ if __name__ == "__main__":
         # fileTrainList = "corpus1_train.labels"
         fileTrainList = "../train.txt"
     else:
-        fileTrainList = input( "Please input the name of the file containing the list of labeled training files.\n" )
+        fileTrainList = input( "Please input the path to the file containing the list of labeled training files: " )
 
     model.train( fileTrainList )
 
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         fileTestList = "../test.txt"
         fileOutput = "../preds.txt"
     else:
-        fileTestList = input( "Please input the name of the file containing the list of testing files.\n" )
-        fileOutput = input( "Please input the name of the file to save predictions to.\n" )
+        fileTestList = input( "Please input the path to the file containing the list of testing files: " )
+        fileOutput = input( "Please input the path to the file to save predictions to: " )
         
     model.test( fileTestList, fileOutput )

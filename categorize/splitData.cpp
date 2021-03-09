@@ -43,16 +43,14 @@ int main() {
     ofstream outputTest( testFile );
     checkValidStream( outputTest, testFile );
 
-    string line;
-
     // Counts number of lines
+    string line;
     while ( std::getline(input,line) ) {
 
         if ( line.length() > 0 )
             fileContents.push_back( line );
 
     }
-
     input.close();
 
     int lineCount = fileContents.size();
@@ -92,7 +90,6 @@ int main() {
     cout << trainCount << " " << trainNum << "\n"
          << testCount << " " << testNum << endl;
     */
-    input.close();
     outputTest.close();
     outputTrain.close();
 
