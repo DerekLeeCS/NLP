@@ -9,7 +9,7 @@ if __name__ == "__main__":
     ############ Train Step ############
     if __debug__:
         # fileTrainList = "corpus1_train.labels"
-        fileTrainList = "../train.txt"
+        fileTrainList = "../train2.txt"
     else:
         fileTrainList = input( "Please input the path to the file containing the list of labeled training files: " )
 
@@ -18,8 +18,8 @@ if __name__ == "__main__":
     ############ Test Step ############
     if __debug__:
         # fileTestList = "corpus1_test.list"
-        fileTestList = "../test.txt"
-        fileOutput = "../preds.txt"
+        fileTestList = "../test2.txt"
+        fileOutput = "../preds2.txt"
     else:
         fileTestList = input( "Please input the path to the file containing the list of testing files: " )
         fileOutput = input( "Please input the path to the file to save predictions to: " )
