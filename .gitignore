@@ -6,7 +6,6 @@
 *.exe
 *.o
 *.pyc
-*.docx
 *.zip
 categorize/tempCodeRunnerFile.py
 categorize/TC_provided/main.py
