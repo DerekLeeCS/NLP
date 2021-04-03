@@ -58,8 +58,8 @@ class CKY:
         # Count number of words in sentence
         n = len( words )
         
-        # Create n+1 by n+1 matrix of empty sets
-        matrix = [ [ set() for _ in range(n) ] for _ in range(n) ]  # possibly n+1
+        # Create n by n matrix of empty sets
+        matrix = [ [ set() for _ in range(n) ] for _ in range(n) ]
 
         # Used for backtracking to determine component constituents
         constituents = [ [ defaultdict( list ) for _ in range(n) ] for _ in range(n) ]    
@@ -70,14 +70,13 @@ class CKY:
                 matrix[j-1][j] = matrix[j-1][j].union([A])
                 constituents[j-1][j][A] = None
 
-            for i in reversed( range(j-1) ):
-                for k in range( i+1, j ):
+            for i in reversed( range(j) ):
+                for k in range( i, j ):
                     for B in matrix[i][k]:
                         for C in matrix[k][j]:
                             for A in self.reverseNonTerminals[ tuple( [B,C] ) ]:
                                 matrix[i][j] = matrix[i][j].union([A])
                                 constituents[i][j][A].append( tuple( [i,k,j,B,C] ) )
-
 
         return matrix, constituents
 
@@ -85,50 +84,59 @@ class CKY:
 
         # Reached terminal
         if row == col-1:
-            return [ [( targetPOS, words[col] )] ] \
+            return [( targetPOS, words[col] )] \
                 if targetPOS in constituents[row][col].keys() \
-                else [[]]
+                else []
 
         # Reached non-terminal
-        listParseTrees = []
-        for i,k,j,B,C in constituents[row][col][targetPOS]:
-            parseLeft = self.getParses( constituents, words, i, k, B )
-            parseRight = self.getParses( constituents, words, k, j, C )
-            listParseTrees.append( [ ( targetPOS, parse_i, parse_j ) \
-                                for parse_i in parseLeft \
-                                for parse_j in parseRight ] )
-
-        return listParseTrees
+        # Credit to Jonathan Lam for coming up with this crazy nested list comprehension
+        return [ ( targetPOS, parse_i, parse_j ) \
+                    for i,k,j,B,C in constituents[row][col][targetPOS] \
+                    for parse_i in self.getParses( constituents, words, i, k, B ) \
+                    for parse_j in self.getParses( constituents, words, k, j, C ) ]
 
     # Prints a specific parse of the sentence with indents
-    def printParse( self, listParseTrees: List[ ParseTree ], depth: int ) -> str:
+    def formatParse( self, listParseTrees: List[ ParseTree ], depth: int ) -> str:
 
         parsedSentence = ""
+        indent = "\t"*depth
 
         if len( listParseTrees ) == 2:
-            return "\t"*depth + "[" + listParseTrees[0] + " " + listParseTrees[1] + "]"
+            return indent + "[" + listParseTrees[0] + " " + listParseTrees[1] + "]"
         else:
-            parsedSentence += "\t"*depth + "[" + listParseTrees[0] + "\n"
-            parsedSentence +=  self.printParse( listParseTrees[1][0], depth+1 ) + "\n"
-            parsedSentence +=  self.printParse( listParseTrees[2][0], depth+1 ) + "]"
+            parsedSentence += indent + "[" + listParseTrees[0] + "\n"
+            parsedSentence += self.formatParse( listParseTrees[1], depth+1 ) + "\n"
+            parsedSentence += self.formatParse( listParseTrees[2], depth+1 ) + "\n" + indent + "]"
 
         return parsedSentence
 
+    # Returns a formatted string in bracket notation
+    # Used after formatParse()
+    def stripFormat( self, formattedStr: str ) -> str:
+        return formattedStr.replace("\t", "").replace("\n", " ").replace(" ]", "]")
+
     # Displays all parsed sentences
-    def display( self, constituents: ArrReverseCKY, words: List[str] ) -> None:
+    def display( self, constituents: ArrReverseCKY, words: List[str], boolTrees: bool ) -> None:
         
         n = len( words )
         
         # Get all valid parses
-        listParseTrees = self.getParses( constituents, words, 0, n-1, 'S' )[0]
+        listParseTrees = self.getParses( constituents, words, 0, n-1, 'S' )
 
         if len( listParseTrees ) == 0:
             print( "NO VALID PARSES" )
             return
 
         # Loop through all valid parses and print
-        print( "Number of valid parses:", len( listParseTrees ) )
         for i in range( len( listParseTrees ) ):
+
             print( "Parse #", i+1, ":", sep="" )
-            finalStr = self.printParse( listParseTrees[i], 0 )
-            print( finalStr )
+            formattedStr = self.formatParse( listParseTrees[i], 0 )
+            print( self.stripFormat( formattedStr ) )
+
+            if boolTrees:
+                print()
+                print( formattedStr )
+
+        print()
+        print( "Number of valid parses:", len( listParseTrees ) )
